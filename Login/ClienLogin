@@ -1,0 +1,43 @@
+"""
+import requests
+from bs4 import BeautifulSoup as bs
+
+login_info = {
+    'userId' : 'yoonseok71',
+    'userPassword' : 'akteh0tks#'
+}
+
+url = 'https://www.clien.net/service/login'
+
+with requests.Session() as s:
+    first_page = s.get('https://www.clien.net');
+    html = first_page.text
+    soup = bs(html, 'html.parser')
+    csrf = soup.find('input', {'name': '_csrf'})
+    login_info['_csrf'] = csrf['value']
+
+    login_req = s.post(url, data=login_info)
+    print(login_req.status_code)
+
+    if login_req.status_code != 200:
+        raise Exception('Opps : ' + login_req.status_code)
+
+    post = s.get('https://www.clien.net/service/board/news/17589980?od=T31&po=0&category=0&groupCd=')
+    soup = bs(post.text, 'html.parser')
+    title = soup.select('#div_content > div.post_title.symph_row > h3 > span')
+    contents = soup.select('#div_content > div.post_view > div.post_content > article > div')
+
+    print(title[0].text)
+    print(contents[0].text)
+
+"""
+
+import tkinter as tk
+
+root = tk.Tk()
+root.geometry('200x200+200+200')
+
+tk.Label(root, text='Label', bg='green').pack(fill=tk.Y)
+tk.Label(root, text='Label2', bg='red').pack(fill=tk.X)
+
+root.mainloop()
